@@ -1,117 +1,222 @@
-import 'package:breath_bank/Paginas/inicioSesion.dart';
 import 'package:breath_bank/Paginas/menuPrincipal.dart';
+import 'package:breath_bank/Paginas/inicioSesion.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class CrearCuenta extends StatefulWidget {
-  const CrearCuenta({super.key});
+  final Function()? onTap;
+  CrearCuenta({Key? key, required this.onTap}) : super(key: key);
+
   @override
   State<CrearCuenta> createState() => EstadoCrearCuenta();
 }
 
 class EstadoCrearCuenta extends State<CrearCuenta> {
-  TextEditingController textoNombre = TextEditingController();
-  TextEditingController textoEmail = TextEditingController();
-  TextEditingController textoContrasena = TextEditingController();
-  TextEditingController textoRepiteContrasena = TextEditingController();
+  final email = TextEditingController();
+  final nombre = TextEditingController();
+  final contrasena = TextEditingController();
+  final RepiteContrasena = TextEditingController();
 
+  void IrAlMenuPrincipal(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => MenuPrincipal(
+                onTap: () {},
+              )),
+    );
+  }
+
+  void CreacionCuenta() async {
+    try {
+      if (contrasena.text == RepiteContrasena.text) {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email.text,
+          password: contrasena.text,
+        );
+        IrAlMenuPrincipal(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Las contraseñas no coinciden')),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('La contraseña es débil')),
+        );
+      } else if (e.code == 'email-already-in-use') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('El correo electrónico ya está en uso')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error al crear la cuenta')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25.0),
-          child: Column(
-            children: [
-              //logo
-              SizedBox(height: 50),
-              Image.asset(
-                'lib/images/logo.png',
-                width: 200,
-                height: 200,
-                fit: BoxFit.contain,
-              ),
-              SizedBox(height: 30),
-              //Escribir nombre usuario
-              TextField(
-                controller: textoNombre,
-                decoration: InputDecoration(
-                  hintText: "Nombre",
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 20),
+
+                //logo
+                Image.asset(
+                  'lib/images/logo.png',
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.contain,
                 ),
-              ),
-              SizedBox(height: 30),
-              //Escribir email
-              TextField(
-                controller: textoEmail,
-                decoration: InputDecoration(
-                  hintText: "Email",
-                ),
-              ),
-              SizedBox(height: 30),
-              //Escribir contraseña
-              TextField(
-                controller: textoContrasena,
-                decoration: InputDecoration(
-                  hintText: "Contraseña",
-                ),
-              ),
-              SizedBox(height: 30),
-              //Escribir contraseña
-              TextField(
-                controller: textoRepiteContrasena,
-                decoration: InputDecoration(
-                  hintText: "Repite Contraseña",
-                ),
-              ),
-              SizedBox(height: 30),
-              //boton crear cuenta
-              GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => menuPrincipal()),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.lightBlueAccent,
-                    borderRadius: BorderRadius.circular(12),
+
+                const SizedBox(height: 30),
+
+                //Escribir nombre
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: TextField(
+                    controller: nombre,
+                    obscureText: false,
+                    decoration: InputDecoration(
+                        enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.grey.shade400)),
+                        fillColor: Colors.grey.shade200,
+                        filled: true,
+                        hintText: 'Nombre',
+                        hintStyle: TextStyle(color: Colors.grey[500])),
                   ),
-                  padding: const EdgeInsets.all(25),
-                  child: const Center(
-                    child: Text(
-                      'Crear cuenta',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
+                ),
+
+                const SizedBox(height: 10),
+
+                //Escribir email
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: TextField(
+                    controller: email,
+                    obscureText: false,
+                    decoration: InputDecoration(
+                        enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.grey.shade400)),
+                        fillColor: Colors.grey.shade200,
+                        filled: true,
+                        hintText: 'Email',
+                        hintStyle: TextStyle(color: Colors.grey[500])),
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                //Escribir contraseña
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: TextField(
+                    controller: contrasena,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                        enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.grey.shade400)),
+                        fillColor: Colors.grey.shade200,
+                        filled: true,
+                        hintText: 'Contraseña',
+                        hintStyle: TextStyle(color: Colors.grey[500])),
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                //Repetir contraseña
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: TextField(
+                    controller: RepiteContrasena,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                        enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.grey.shade400)),
+                        fillColor: Colors.grey.shade200,
+                        filled: true,
+                        hintText: 'Repite la contraseña',
+                        hintStyle: TextStyle(color: Colors.grey[500])),
+                  ),
+                ),
+
+                const SizedBox(height: 25),
+
+                //boton crear cuenta
+                GestureDetector(
+                  onTap: () {
+                    CreacionCuenta();
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(25),
+                    margin: const EdgeInsets.symmetric(horizontal: 25),
+                    decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(8)),
+                    child: const Center(
+                      child: Text(
+                        "Crear Cuenta",
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: 30),
-              //boton si ya tienes cuenta
-              GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => InicioSesion()),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.lightBlueAccent,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-                  child: const Center(
-                    child: Text(
-                      'Si ya tienes cuenta',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
+
+                const SizedBox(height: 20),
+
+                const SizedBox(height: 50),
+
+                //¿Ya eres miembro? Inicia Sesion
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '¿Ya tienes cuenta?',
+                      style: TextStyle(color: Colors.grey[700]),
+                    ),
+                    const SizedBox(width: 4),
+                    GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => InicioSesion()),
+                      ),
+                      child: const Text(
+                        'Inicia sesión',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
