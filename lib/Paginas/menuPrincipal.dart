@@ -3,30 +3,29 @@ import 'package:breath_bank/Paginas/inicioSesion.dart';
 import 'package:breath_bank/Paginas/perfil.dart';
 import 'package:breath_bank/Paginas/estadisticas.dart';
 import 'package:breath_bank/Paginas/ajustes.dart';
-import 'package:breath_bank/Paginas/amigos.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 class MenuPrincipal extends StatefulWidget {
   final Function()? onTap;
-  const MenuPrincipal({super.key, required this.onTap});
+  const MenuPrincipal({Key? key, required this.onTap}) : super(key: key);
 
   @override
   State<MenuPrincipal> createState() => EstadoMenuPrincipal();
 }
 
 class EstadoMenuPrincipal extends State<MenuPrincipal> {
-  int indiceActual = 1;
-
-  final List<Widget> pantallas = [
-    const Estadisticas(),
-    const Text(''),
-    const Amigos(),
-  ];
+  void IrAlInicioSesion(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => InicioSesion()),
+    );
+  }
 
   void cerrarSesion() async {
     FirebaseAuth.instance.signOut();
+    IrAlInicioSesion(context);
   }
 
   @override
@@ -46,12 +45,8 @@ class EstadoMenuPrincipal extends State<MenuPrincipal> {
               fit: BoxFit.contain,
             ),
             SizedBox(height: 30),
-            Expanded(
-              child: pantallas[indiceActual],
-            ),
             Container(
-              margin: EdgeInsets.only(
-                  bottom: 200), // Ajusta el margen inferior según necesites
+              margin: EdgeInsets.only(bottom: 200),
               child: GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -80,8 +75,6 @@ class EstadoMenuPrincipal extends State<MenuPrincipal> {
           ],
         ),
       ),
-
-
       appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -116,7 +109,6 @@ class EstadoMenuPrincipal extends State<MenuPrincipal> {
                     style: TextStyle(color: Colors.lightBlueAccent),
                   ),
                   onTap: () {
-                    // Navegar a la página "Home" cuando se toca el ListTile
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -136,16 +128,13 @@ class EstadoMenuPrincipal extends State<MenuPrincipal> {
                     style: TextStyle(color: Colors.lightBlueAccent),
                   ),
                   onTap: () {
-                    // Navegar a la página "Perfil" cuando se toca el ListTile
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const Estadisticas( )
-                      ),
+                          builder: (context) => const Estadisticas()),
                     );
                   },
                 ),
-
                 ListTile(
                   leading: const Icon(
                     Icons.person,
@@ -156,13 +145,12 @@ class EstadoMenuPrincipal extends State<MenuPrincipal> {
                     style: TextStyle(color: Colors.lightBlueAccent),
                   ),
                   onTap: () {
-                    // Navegar a la página "Perfil" cuando se toca el ListTile
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => Perfil(
-                            onTap: () {},
-                          )),
+                                onTap: () {},
+                              )),
                     );
                   },
                 ),
@@ -176,7 +164,6 @@ class EstadoMenuPrincipal extends State<MenuPrincipal> {
                     style: TextStyle(color: Colors.lightBlueAccent),
                   ),
                   onTap: () {
-                    // Navegar a la página "Ajustes" cuando se toca el ListTile
                     Navigator.push(
                       context,
                       MaterialPageRoute(
