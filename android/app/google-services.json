@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "403412459232",
+    "project_id": "breathbank-79115",
+    "storage_bucket": "breathbank-79115.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:403412459232:android:127aefac0642a5a2b33a85",
+        "android_client_info": {
+          "package_name": "com.example.breath_bank"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlk8BlPN5oZtf9syPgIC7RwpmX_jmsTx8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
