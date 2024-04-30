@@ -34,13 +34,18 @@ class EstadoInicioSesion extends State<InicioSesion> {
         email: email.text,
         password: contrasena.text,
       );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Inicio de sesión exitoso.'),
+        ),
+      );
       IrAlMenuPrincipal(context);
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No existe ese usuario');
-      } else if (e.code == 'wrong-password') {
-        print('Contraseña erronea');
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error al iniciar sesión. Por favor, intentalo de nuevo.'),
+        ),
+      );
     }
   }
 

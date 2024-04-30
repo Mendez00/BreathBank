@@ -30,9 +30,15 @@ class EstadoCrearCuenta extends State<CrearCuenta> {
   void CreacionCuenta() async {
     try {
       if (contrasena.text == RepiteContrasena.text) {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email.text,
           password: contrasena.text,
+        );
+        await userCredential.user!.sendEmailVerification();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Cuenta creada correctamente. Por favor, verifica tu correo electrónico.'),
+          ),
         );
         IrAlMenuPrincipal(context);
       } else {
