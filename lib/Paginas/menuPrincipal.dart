@@ -22,7 +22,10 @@ class EstadoMenuPrincipal extends State<MenuPrincipal> {
         backgroundColor: Colors.white,
         drawer: MyDrawer(),
         appBar: AppBar(
-            backgroundColor: Colors.transparent,
+            backgroundColor:
+                Colors.lightBlueAccent,
+            title: Text('Inicio'),
+            centerTitle: true,
             elevation: 0,
             leading: Builder(
               builder: (context) => IconButton(
@@ -41,7 +44,7 @@ class EstadoMenuPrincipal extends State<MenuPrincipal> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 20),
+                const SizedBox(height: 50),
                 Image.asset(
                   'lib/images/logo.png',
                   width: 175,

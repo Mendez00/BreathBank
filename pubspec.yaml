@@ -39,6 +39,8 @@ dependencies:
   firebase_core: ^2.27.0
   firebase_auth: ^4.17.8
   cloud_firestore: ^4.15.8
+  syncfusion_flutter_charts: ^20.4.48
+  flutter_timer_countdown: ^1.0.0
 
 dev_dependencies:
   flutter_test:

@@ -1,14 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:breath_bank/Paginas/inversion.dart';
 
 class Ejercicio3 extends StatefulWidget {
+  final VoidCallback onEjercicioCompleto;
+
+  const Ejercicio3({Key? key, required this.onEjercicioCompleto}) : super(key: key);
+
   @override
   State<Ejercicio3> createState() => EstadoEjercicio3();
 }
 
 class EstadoEjercicio3 extends State<Ejercicio3> {
+  bool _completado = true;
   final TextEditingController subirDatos = TextEditingController();
 
   @override
@@ -40,7 +46,7 @@ class EstadoEjercicio3 extends State<Ejercicio3> {
                         ),
                         TextSpan(
                           text:
-                          'Varias respiraciones progresivamente más largas guiadas por audio',
+                          'Lea la ayuda y después utiliza el audio-guía para completar el ejercicio',
                           style: TextStyle(
                             fontSize: 20,
                           ),
@@ -99,14 +105,7 @@ class EstadoEjercicio3 extends State<Ejercicio3> {
                 const SizedBox(height: 40),
                 ElevatedButton(
                   onPressed: () {
-                    guardarDatos();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Inversion(
-                            onTap: () {},
-                          )),
-                    );
+                    guardarDatos(context);
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 35.0, horizontal: 75.0),
@@ -128,30 +127,56 @@ class EstadoEjercicio3 extends State<Ejercicio3> {
     );
   }
 
-  void guardarDatos() async {
+  void guardarDatos(BuildContext context) async {
     await Firebase.initializeApp();
 
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
+
     int nivelAlcanzado = int.tryParse(subirDatos.text) ?? 0;
 
-    Map<String, dynamic> Ej3 = {
-      'Nivel alcanzado': nivelAlcanzado,
-      'fecha': Timestamp.now(),
-    };
-
     try {
-      await firestore.collection('Ejercicios').add(Ej3);
+      String username = user!.uid;
+      DocumentReference userDocRef = firestore.collection('Inversiones').doc(username);
+      Timestamp fechaActual = Timestamp.now();
+
+
+      QuerySnapshot querySnapshot = await userDocRef.collection('Inversión')
+          .orderBy('fecha1', descending: true)
+          .limit(1)
+          .get();
+
+      DocumentReference pruebaDocRef = userDocRef.collection('Inversión').doc(querySnapshot.docs.last.id);
+
+      Map<String, dynamic> mediaData = {
+        'Ej3': nivelAlcanzado,
+        'fecha3': fechaActual,
+
+      };
+
+      await pruebaDocRef.update(mediaData);
+      //await userDocRef.set(existingData);
+
 
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Datos guardados correctamente'),
         duration: Duration(seconds: 2),
       ));
+
+      setState(() {
+        _completado = true;
+      });
+      widget.onEjercicioCompleto();
+
+      Navigator.pop(context);
+
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Error al guardar los datos: $error'),
         duration: Duration(seconds: 10),
       ));
     }
-  }
+    }
 }

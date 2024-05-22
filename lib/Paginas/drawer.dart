@@ -34,7 +34,7 @@ class MyDrawer extends StatelessWidget {
             color: Colors.lightBlueAccent,
           ),
           title: Text(
-            'Home',
+            'Inicio',
             style: TextStyle(color: Colors.lightBlueAccent),
           ),
           onTap: () {
