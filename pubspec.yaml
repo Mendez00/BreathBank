@@ -39,8 +39,11 @@ dependencies:
   firebase_core: ^2.27.0
   firebase_auth: ^4.17.8
   cloud_firestore: ^4.15.8
-  syncfusion_flutter_charts: ^20.4.48
+  syncfusion_flutter_charts: ^25.2.7
   flutter_timer_countdown: ^1.0.0
+  just_audio: ^0.9.36
+  intl: ^0.19.0
+  country_picker: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -51,7 +54,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -66,7 +69,11 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - lib/images/
+    - lib/imagenes/
+    - assets/audio/ej3.mp3
+    - assets/audio/ejf.flac
+    - assets/audio/EjWav.wav
+    - assets/audio/guia.mp3
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -29,6 +29,11 @@
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
+	<key>NSMicrophoneUsageDescription</key>
+    <string>La aplicación necesita acceso al micrófono para grabar audio.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>La aplicación necesita acceso a la biblioteca de fotos para seleccionar archivos de audio.</string>
+
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
