@@ -161,48 +161,42 @@ class Resumen extends StatelessWidget {
   }
 
   int _calcularNivelInversorEjercicio1(int valor) {
-    if (valor >= 14) return 0;
-    if (valor >= 13) return 1;
-    if (valor >= 12) return 2;
-    if (valor >= 11) return 3;
+    if (valor >= 18) return 0;
+    if (valor >= 16) return 1;
+    if (valor >= 14) return 2;
+    if (valor >= 12) return 3;
     if (valor >= 10) return 4;
     if (valor >= 9) return 5;
-    if (valor >= 8) return 6;
-    if (valor >= 7) return 7;
-    if (valor >= 6) return 8;
-    if (valor >= 5) return 9;
-    if (valor >= 4) return 10;
-    if (valor >= 3) return 11;
+    if (valor >= 7) return 6;
+    if (valor >= 6) return 7;
+    if (valor >= 5) return 8;
+    if (valor >= 4) return 9;
     return 0;
   }
 
   int _calcularNivelInversorEjercicio2(int valor) {
-    if (valor >= 301) return 11;
-    if (valor >= 271) return 10;
-    if (valor >= 241) return 9;
-    if (valor >= 211) return 8;
-    if (valor >= 181) return 7;
-    if (valor >= 151) return 6;
-    if (valor >= 121) return 5;
-    if (valor >= 91) return 4;
-    if (valor >= 61) return 3;
-    if (valor >= 41) return 2;
-    if (valor >= 21) return 1;
+    if (valor >= 301) return 9;
+    if (valor >= 271) return 8;
+    if (valor >= 241) return 7;
+    if (valor >= 211) return 6;
+    if (valor >= 191) return 5;
+    if (valor >= 151) return 4;
+    if (valor >= 111) return 3;
+    if (valor >= 71) return 2;
+    if (valor >= 31) return 1;
     return 0;
   }
 
   int _calcularNivelInversorEjercicio3(int valor) {
-    if (valor >= 78) return 11;
-    if (valor >= 71) return 10;
-    if (valor >= 64) return 9;
-    if (valor >= 57) return 8;
-    if (valor >= 50) return 7;
-    if (valor >= 43) return 6;
-    if (valor >= 36) return 5;
-    if (valor >= 29) return 4;
-    if (valor >= 22) return 3;
-    if (valor >= 15) return 2;
-    if (valor >= 8) return 1;
+    if (valor >= 90) return 9;
+    if (valor >= 80) return 8;
+    if (valor >= 70) return 7;
+    if (valor >= 60) return 6;
+    if (valor >= 50) return 5;
+    if (valor >= 40) return 4;
+    if (valor >= 30) return 3;
+    if (valor >= 20) return 2;
+    if (valor >= 10) return 1;
     return 0;
   }
 

@@ -55,37 +55,17 @@ class EstadoInversion extends State<Inversion> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(child: Container()),
                 for (int i = 0; i <= 2; i++)
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: CircleAvatar(
-                      backgroundColor: i == paginaActual
-                          ? Colors.lightBlueAccent
-                          : Colors.grey,
+                      backgroundColor:
+                      i == paginaActual ? Colors.lightBlueAccent : Colors.grey,
                       radius: 10,
                     ),
                   ),
-                Expanded(child: Container()),
-                ElevatedButton(
-                  onPressed: flechaBloqueada
-                      ? null
-                      : () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Resumen()),
-                          );
-                        },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: flechaBloqueada ? Colors.grey : Colors.lightBlueAccent,
-                    padding: EdgeInsets.all(16),
-                  ),
-                  child: const Icon(
-                    Icons.arrow_forward,
-                    color: Colors.white,
-                  ),
-                ),
               ],
             ),
           ),
@@ -108,7 +88,7 @@ class EstadoInversion extends State<Inversion> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Image.asset(
-              'lib/images/E1.png',
+              'lib/imagenes/E1.png',
               width: 200,
               height: 100,
               fit: BoxFit.contain,
@@ -172,7 +152,7 @@ class EstadoInversion extends State<Inversion> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Image.asset(
-              'lib/images/E1.png',
+              'lib/imagenes/E1.png',
               width: 200,
               height: 100,
               fit: BoxFit.contain,
@@ -236,7 +216,7 @@ class EstadoInversion extends State<Inversion> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Image.asset(
-              'lib/images/E1.png',
+              'lib/imagenes/E1.png',
               width: 200,
               height: 100,
               fit: BoxFit.contain,
@@ -273,7 +253,6 @@ class EstadoInversion extends State<Inversion> {
                       onEjercicioCompleto: () {
                         setState(() {
                           estadoEjercicio3 = EstadoEjercicio.Completado;
-                          flechaBloqueada = false;
                         });
                       },
                     ),

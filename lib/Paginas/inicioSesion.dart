@@ -63,7 +63,7 @@ class EstadoInicioSesion extends State<InicioSesion> {
 
                 //logo
                 Image.asset(
-                  'lib/images/logo.png',
+                  'lib/imagenes/logo.png',
                   width: 200,
                   height: 200,
                   fit: BoxFit.contain,

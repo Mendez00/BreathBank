@@ -1,3 +1,4 @@
+import 'package:breath_bank/Paginas/inversion.dart';
 import 'package:breath_bank/Paginas/menuPrincipal.dart';
 import 'package:breath_bank/Paginas/inicioSesion.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,11 +18,11 @@ class EstadoCrearCuenta extends State<CrearCuenta> {
   final contrasena = TextEditingController();
   final RepiteContrasena = TextEditingController();
 
-  void IrAlMenuPrincipal(BuildContext context) {
+  void IrAInversion(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => MenuPrincipal(
+          builder: (context) => Inversion(
                 onTap: () {},
               )),
     );
@@ -40,7 +41,7 @@ class EstadoCrearCuenta extends State<CrearCuenta> {
             content: Text('Cuenta creada correctamente. Por favor, verifica tu correo electrónico.'),
           ),
         );
-        IrAlMenuPrincipal(context);
+        IrAInversion(context);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Las contraseñas no coinciden')),
@@ -81,7 +82,7 @@ class EstadoCrearCuenta extends State<CrearCuenta> {
 
                 //logo
                 Image.asset(
-                  'lib/images/logo.png',
+                  'lib/imagenes/logo.png',
                   width: 200,
                   height: 200,
                   fit: BoxFit.contain,

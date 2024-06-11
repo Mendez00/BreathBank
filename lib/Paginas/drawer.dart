@@ -26,7 +26,7 @@ class MyDrawer extends StatelessWidget {
       padding: EdgeInsets.zero,
       children: [
         DrawerHeader(
-          child: Image.asset('lib/images/logo.png'),
+          child: Image.asset('lib/imagenes/logo.png'),
         ),
         ListTile(
           leading: Icon(
@@ -35,7 +35,7 @@ class MyDrawer extends StatelessWidget {
           ),
           title: Text(
             'Inicio',
-            style: TextStyle(color: Colors.lightBlueAccent),
+            style: TextStyle(color: Colors.black),
           ),
           onTap: () {
             Navigator.push(
@@ -53,7 +53,7 @@ class MyDrawer extends StatelessWidget {
           ),
           title: Text(
             'Estadisticas',
-            style: TextStyle(color: Colors.lightBlueAccent),
+            style: TextStyle(color: Colors.black),
           ),
           onTap: () {
             Navigator.push(
@@ -71,7 +71,7 @@ class MyDrawer extends StatelessWidget {
           ),
           title: Text(
             'Perfil',
-            style: TextStyle(color: Colors.lightBlueAccent),
+            style: TextStyle(color: Colors.black),
           ),
           onTap: () {
             Navigator.push(
@@ -89,7 +89,7 @@ class MyDrawer extends StatelessWidget {
           ),
           title: Text(
             'Ajustes',
-            style: TextStyle(color: Colors.lightBlueAccent),
+            style: TextStyle(color: Colors.black),
           ),
           onTap: () {
             Navigator.push(
@@ -107,7 +107,7 @@ class MyDrawer extends StatelessWidget {
           ),
           title: Text(
             'Cerrar sesión',
-            style: TextStyle(color: Colors.lightBlueAccent),
+            style: TextStyle(color: Colors.black),
           ),
           onTap: () {
             cerrarSesion(context);

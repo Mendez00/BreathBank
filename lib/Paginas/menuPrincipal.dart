@@ -46,7 +46,7 @@ class EstadoMenuPrincipal extends State<MenuPrincipal> {
               children: [
                 const SizedBox(height: 50),
                 Image.asset(
-                  'lib/images/logo.png',
+                  'lib/imagenes/logo.png',
                   width: 175,
                   height: 175,
                   fit: BoxFit.contain,
