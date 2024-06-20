@@ -209,18 +209,18 @@ class EstadoEjercicio1 extends State<Ejercicio1> {
     try {
       String username = user!.uid;
       DocumentReference userDocRef =
-          firestore.collection('Inversiones').doc(username);
+          firestore.collection('Prueba de nivel').doc(username);
       Timestamp fechaActual = Timestamp.now();
 
       int numeroPrueba = 1;
       QuerySnapshot querySnapshot =
-          await userDocRef.collection('Inversión').get();
+          await userDocRef.collection('Pruebas').get();
       if (querySnapshot.docs.isNotEmpty) {
         numeroPrueba = querySnapshot.docs.length + 1;
       }
 
       DocumentReference pruebaDocRef =
-          userDocRef.collection('Inversión').doc('Inversión $numeroPrueba');
+          userDocRef.collection('Pruebas').doc('Prueba $numeroPrueba');
 
       Map<String, dynamic> ejercicioData = {
         'fecha1': fechaActual,

@@ -273,18 +273,18 @@ class EstadoEjercicio2 extends State<Ejercicio2> {
     try {
       String username = user!.uid;
       DocumentReference userDocRef =
-          firestore.collection('Inversiones').doc(username);
+          firestore.collection('Prueba de nivel').doc(username);
       Timestamp fechaActual = Timestamp.now();
 
       QuerySnapshot querySnapshot = await userDocRef
-          .collection('Inversión')
+          .collection('Pruebas')
           .orderBy('fecha1', descending: true)
           .limit(1)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
         DocumentReference pruebaDocRef =
-            userDocRef.collection('Inversión').doc(querySnapshot.docs.last.id);
+            userDocRef.collection('Pruebas').doc(querySnapshot.docs.last.id);
 
         Map<String, dynamic> mediaData = {
           'Ej2 Intento 1': dato1Valor,

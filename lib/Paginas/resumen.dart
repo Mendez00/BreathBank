@@ -33,6 +33,9 @@ class Resumen extends StatelessWidget {
               nivelInversorEjercicio2,
               nivelInversorEjercicio3,
             );
+
+            _guardarNivelInversorTotal(resumen['documentId'], nivelInversorTotal);
+
             return Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -46,7 +49,7 @@ class Resumen extends StatelessWidget {
                   const SizedBox(height: 70.0),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => MenuPrincipal(onTap: () {})),
                       );
@@ -92,6 +95,7 @@ class Resumen extends StatelessWidget {
       ],
     );
   }
+
   Widget _buildTituloEjercicio2(String ejercicio, int respiraciones, int nivelInversor) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -111,6 +115,7 @@ class Resumen extends StatelessWidget {
       ],
     );
   }
+
   Widget _buildTituloEjercicio3(String ejercicio, int respiraciones, int nivelInversor) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -148,6 +153,14 @@ class Resumen extends StatelessWidget {
     );
   }
 
+  Future<void> _guardarNivelInversorTotal(String? documentoId, int nivelInversorTotal) async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null && documentoId != null) {
+      await resumenService.actualizarNivelInversorTotal(user.uid, documentoId, nivelInversorTotal);
+    }
+  }
+
   Future<Map<String, dynamic>> _obtenerResumen() async {
     User? user = FirebaseAuth.instance.currentUser;
 
@@ -157,7 +170,11 @@ class Resumen extends StatelessWidget {
 
     String nombreUsuario = user.uid;
 
-    return await resumenService.obtenerResumen(nombreUsuario);
+    final resumen = await resumenService.obtenerResumen(nombreUsuario);
+    if (resumen.isNotEmpty) {
+      resumen['documentId'] = resumen['documentId'];
+    }
+    return resumen;
   }
 
   int _calcularNivelInversorEjercicio1(int valor) {
@@ -211,22 +228,37 @@ class ResumenService {
   Future<Map<String, dynamic>> obtenerResumen(String nombreUsuario) async {
     try {
       QuerySnapshot querySnapshot = await _firestore
-          .collection('Inversiones')
+          .collection('Prueba de nivel')
           .doc(nombreUsuario)
-          .collection('Inversión')
+          .collection('Pruebas')
           .orderBy('fecha1', descending: true)
           .limit(1)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
         DocumentSnapshot lastDocument = querySnapshot.docs.first;
-        return lastDocument.data() as Map<String, dynamic>;
+        final data = lastDocument.data() as Map<String, dynamic>;
+        data['documentId'] = lastDocument.id;
+        return data;
       } else {
         return {};
       }
     } catch (e) {
       print('Error al obtener el resumen: $e');
       return {};
+    }
+  }
+
+  Future<void> actualizarNivelInversorTotal(String nombreUsuario, String documentoId, int nivelInversorTotal) async {
+    try {
+      await _firestore
+          .collection('Prueba de nivel')
+          .doc(nombreUsuario)
+          .collection('Pruebas')
+          .doc(documentoId)
+          .update({'Nivel Inversor': nivelInversorTotal});
+    } catch (e) {
+      print('Error al actualizar el nivel de inversor total: $e');
     }
   }
 }
