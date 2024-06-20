@@ -14,9 +14,12 @@ class Ajustes extends StatefulWidget {
 
 class EstadoAjustes extends State<Ajustes> {
   final TextEditingController nombreController = TextEditingController();
-  final TextEditingController contrasenaAntiguaController = TextEditingController();
-  final TextEditingController contrasenaNuevaController = TextEditingController();
-  final TextEditingController contrasenaRepetirController = TextEditingController();
+  final TextEditingController contrasenaAntiguaController =
+      TextEditingController();
+  final TextEditingController contrasenaNuevaController =
+      TextEditingController();
+  final TextEditingController contrasenaRepetirController =
+      TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -28,19 +31,17 @@ class EstadoAjustes extends State<Ajustes> {
     User? user = _auth.currentUser;
     if (user != null) {
       try {
-
         await user.updateDisplayName(nuevoNombre);
         await user.reload();
         user = _auth.currentUser;
 
-        DocumentReference userDocRef = _firestore.collection('usuarios').doc(user?.uid);
+        DocumentReference userDocRef =
+            _firestore.collection('usuarios').doc(user?.uid);
         DocumentSnapshot userDoc = await userDocRef.get();
 
         if (userDoc.exists) {
-
           await userDocRef.update({'nombre': nuevoNombre});
         } else {
-
           await userDocRef.set({'nombre': nuevoNombre});
         }
 
@@ -59,7 +60,8 @@ class EstadoAjustes extends State<Ajustes> {
     }
   }
 
-  Future<void> cambiarContrasena(String contrasenaAntigua, String nuevaContrasena) async {
+  Future<void> cambiarContrasena(
+      String contrasenaAntigua, String nuevaContrasena) async {
     User? user = _auth.currentUser;
     if (user != null) {
       AuthCredential credential = EmailAuthProvider.credential(
@@ -111,28 +113,35 @@ class EstadoAjustes extends State<Ajustes> {
         child: ListView(
           children: [
             const SizedBox(height: 20),
-            Center(
-              child: Column(
-                children: [
-                  if (user?.photoURL != null)
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(user!.photoURL!),
-                      radius: 50,
-                    ),
-                  const SizedBox(height: 20),
-                  RichText(
-                    text: TextSpan(
-                      text: email,
-                      style: TextStyle(fontSize: 20, color: Colors.black),
-                    ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '¡Hola $displayName!',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
-                  const SizedBox(height: 20),
-                ],
-              ),
+                ),
+                const SizedBox(width: 5),
+                RichText(
+                  text: TextSpan(
+                    text: email,
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blueAccent),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 20),
             ExpansionTile(
-              title: Text('Cambiar nombre'),
+              title: Text(
+                'Cambiar nombre',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               children: [
                 TextField(
                   controller: nombreController,
@@ -175,7 +184,10 @@ class EstadoAjustes extends State<Ajustes> {
               ],
             ),
             ExpansionTile(
-              title: Text('Cambiar contraseña'),
+              title: Text(
+                'Cambiar contraseña',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               children: [
                 TextField(
                   controller: contrasenaAntiguaController,
@@ -274,7 +286,8 @@ class EstadoAjustes extends State<Ajustes> {
                         nuevaContrasena.isNotEmpty &&
                         repetirContrasena.isNotEmpty) {
                       if (nuevaContrasena == repetirContrasena) {
-                        await cambiarContrasena(contrasenaAntigua, nuevaContrasena);
+                        await cambiarContrasena(
+                            contrasenaAntigua, nuevaContrasena);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text('Las nuevas contraseñas no coinciden'),

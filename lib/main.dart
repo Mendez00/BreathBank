@@ -1,11 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:breath_bank/Paginas/menuPrincipal.dart';
-import 'package:breath_bank/Paginas/resumen.dart';
 import 'package:breath_bank/Paginas/inicioSesion.dart';
 import 'package:flutter/material.dart';
-import 'package:breath_bank/Paginas/inversion.dart';
-import 'package:flutter/material.dart';
+
 
 
 void main() async{
@@ -23,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-    home: InicioSesion(),//MenuPrincipal(onTap: () {  }),
+    home: InicioSesion(),
       );
   }
 }
