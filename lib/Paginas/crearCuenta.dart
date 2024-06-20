@@ -1,5 +1,4 @@
 import 'package:breath_bank/Paginas/inversion.dart';
-import 'package:breath_bank/Paginas/menuPrincipal.dart';
 import 'package:breath_bank/Paginas/inicioSesion.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +18,7 @@ class EstadoCrearCuenta extends State<CrearCuenta> {
   final RepiteContrasena = TextEditingController();
 
   void IrAInversion(BuildContext context) {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
           builder: (context) => Inversion(
@@ -208,7 +207,7 @@ class EstadoCrearCuenta extends State<CrearCuenta> {
                     ),
                     const SizedBox(width: 4),
                     GestureDetector(
-                      onTap: () => Navigator.push(
+                      onTap: () => Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => InicioSesion()),
                       ),

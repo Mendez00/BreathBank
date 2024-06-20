@@ -1,5 +1,7 @@
 import 'package:breath_bank/Paginas/menuPrincipal.dart';
 import 'package:breath_bank/Paginas/crearCuenta.dart';
+import 'package:breath_bank/Paginas/inversion.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -18,15 +20,65 @@ class EstadoInicioSesion extends State<InicioSesion> {
   final email = TextEditingController();
   final contrasena = TextEditingController();
 
-  void IrAlMenuPrincipal(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => MenuPrincipal(
-                onTap: () {},
-              )),
-    );
-  }
+  void IrAlMenuPrincipal(BuildContext context) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        String userId = user.uid;
+
+        // Consultar documentos que contengan Ej1
+        QuerySnapshot ej1Snapshot = await FirebaseFirestore.instance
+            .collection('Prueba de nivel')
+            .doc(userId)
+            .collection('Pruebas')
+            .where('Ej1', isNull: false)
+            .limit(1)
+            .get();
+
+        // Consultar documentos que contengan Ej2
+        QuerySnapshot ej2Snapshot = await FirebaseFirestore.instance
+            .collection('Prueba de nivel')
+            .doc(userId)
+            .collection('Pruebas')
+            .where('Ej2', isNull: false)
+            .limit(1)
+            .get();
+
+        // Consultar documentos que contengan Ej3
+        QuerySnapshot ej3Snapshot = await FirebaseFirestore.instance
+            .collection('Prueba de nivel')
+            .doc(userId)
+            .collection('Pruebas')
+            .where('Ej3', isNull: false)
+            .limit(1)
+            .get();
+
+        // Verificar si alguna consulta tiene resultados
+        if (ej1Snapshot.docs.isNotEmpty && ej2Snapshot.docs.isNotEmpty && ej3Snapshot.docs.isNotEmpty) {
+          // Si existen documentos para Ej1, Ej2 y Ej3, ir al menú principal
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => MenuPrincipal(onTap: () {})),
+          );
+        } else {
+          // Si no existen documentos para alguna de las condiciones, ir a la pantalla de inversión
+          // Aquí puedes reemplazar `PantallaInversion` con el nombre de tu pantalla de inversión
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => Inversion(onTap: () {  },)),
+          );
+        }
+      }
+    } catch (e) {
+      print("Error al verificar documentos: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error al verificar documentos.'),
+        ),
+      );
+    }
+
+    }
 
   void iniciarSesion() async {
     try {
@@ -121,7 +173,7 @@ class EstadoInicioSesion extends State<InicioSesion> {
                     children: [
                       Text(
                         '¿Olvidaste tu constraseña?',
-                        style: TextStyle(color: Colors.grey[600]),
+                        style: TextStyle(color: Colors.white/*grey[600]*/),
                       ),
                     ],
                   ),
@@ -163,7 +215,7 @@ class EstadoInicioSesion extends State<InicioSesion> {
                     ),
                     const SizedBox(width: 4),
                     GestureDetector(
-                      onTap: () => Navigator.push(
+                      onTap: () => Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) => CrearCuenta(
