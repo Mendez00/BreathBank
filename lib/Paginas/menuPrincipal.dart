@@ -1,15 +1,11 @@
 import 'package:breath_bank/Paginas/inversion.dart';
-import 'package:breath_bank/Paginas/inicioSesion.dart';
 import 'package:breath_bank/Paginas/drawer.dart';
-import 'package:breath_bank/Paginas/perfil.dart';
-import 'package:breath_bank/Paginas/estadisticas.dart';
-import 'package:breath_bank/Paginas/ajustes.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:breath_bank/Paginas/listones.dart';
 import 'package:flutter/material.dart';
 
 class MenuPrincipal extends StatefulWidget {
   final Function()? onTap;
-  const MenuPrincipal({Key? key, required this.onTap}) : super(key: key);
+  const MenuPrincipal({super.key, required this.onTap});
 
   @override
   State<MenuPrincipal> createState() => EstadoMenuPrincipal();
@@ -51,7 +47,7 @@ class EstadoMenuPrincipal extends State<MenuPrincipal> {
                   height: 175,
                   fit: BoxFit.contain,
                 ),
-                const SizedBox(height: 75),
+                const SizedBox(height: 50),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 25.0),
                   child: Text.rich(
@@ -66,7 +62,7 @@ class EstadoMenuPrincipal extends State<MenuPrincipal> {
                         ),
                         TextSpan(
                           text:
-                              'Realizar ejercicios diarios para mejorar tu capacidad pulmonar, tu estrés y tu concentración en solo 10 minutos',
+                              'Realiza ejercicios diarios para mejorar tu capacidad pulmonar, tu estrés y tu concentración en solo 10 minutos',
                           style: TextStyle(
                             fontSize: 16,
                           ),
@@ -76,15 +72,39 @@ class EstadoMenuPrincipal extends State<MenuPrincipal> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                const SizedBox(height: 50),
+                const SizedBox(height: 40),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Inversion(onTap: () {})),
+                    );
+                  },
+                  child: Container(
+                    width: 250,
+                    height: 100,
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        color: Colors.lightBlueAccent,
+                        borderRadius: BorderRadius.circular(8)),
+                    child: const Center(
+                      child: Text(
+                        "Prueba de Nivel",
+                        style: TextStyle(color: Colors.white, fontSize: 25.0),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30),
                 Container(
-                  margin: EdgeInsets.only(bottom: 200),
+                  margin: EdgeInsets.only(bottom: 50),
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => Inversion(onTap: () {})),
+                            builder: (context) => Listones(onTap: () {})),
                       );
                     },
                     child: Container(

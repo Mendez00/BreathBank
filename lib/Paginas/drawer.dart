@@ -10,7 +10,7 @@ class MyDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void IrAlInicioSesion(BuildContext context) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => InicioSesion()),
       );
@@ -38,7 +38,7 @@ class MyDrawer extends StatelessWidget {
             style: TextStyle(color: Colors.black),
           ),
           onTap: () {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => MenuPrincipal(onTap: () {}),
@@ -56,7 +56,7 @@ class MyDrawer extends StatelessWidget {
             style: TextStyle(color: Colors.black),
           ),
           onTap: () {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => Estadisticas(),
@@ -74,7 +74,7 @@ class MyDrawer extends StatelessWidget {
             style: TextStyle(color: Colors.black),
           ),
           onTap: () {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => Perfil(onTap: () {}),
@@ -92,7 +92,7 @@ class MyDrawer extends StatelessWidget {
             style: TextStyle(color: Colors.black),
           ),
           onTap: () {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => Ajustes(onTap: () {}),
