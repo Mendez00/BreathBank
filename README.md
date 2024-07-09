@@ -8,7 +8,9 @@ BreathBank es un proyecto de fin de grado que consiste en la creación de una ap
 En este repositorio encontraremos diferentes carpetas y archivos:
 
 -apk: contiene el archivo de ejecución de la aplicación de Android.
+
 -doc: contiene la documentación del proyecto, anexos y memoria.
+
 -Resto de carpetas y ficheros: contienen lo necesario para poder instalar, compilar y ejecutar el proyecto.
 
 ## Despliegue
@@ -17,4 +19,4 @@ Para poder ejecutar la aplicación desde un dispositivo Android, se debe de inst
 
 Es recomendable utilizar Android para asegurarse del rendimiento máximo de la aplicación, ya que mediante emuladores, pueden surgir problemas.
 
-En cambio si su dispositivo es IOS, puede realizar el despliegue desde este enlace, , en el que podrás probar la aplicación en un emulador, Appetize.io.
+En cambio si su dispositivo es IOS, puede realizar el despliegue desde este enlace, https://appetize.io/app/b_adrf7u6gi7k2tylud4gk5pdooi, en el que podrás probar la aplicación en un emulador, Appetize.io.
