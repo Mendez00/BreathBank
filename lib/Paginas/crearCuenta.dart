@@ -1,10 +1,15 @@
-import 'package:breath_bank/Paginas/inversion.dart';
-import 'package:breath_bank/Paginas/inicioSesion.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:breath_bank/Paginas/menuPrincipalInicial.dart'; // Importación del menú principal inicial
+import 'package:breath_bank/Paginas/inicioSesion.dart'; // Importación de la pantalla de inicio de sesión
 
+/// Widget para la pantalla de creación de cuenta de usuario.
 class CrearCuenta extends StatefulWidget {
   final Function()? onTap;
+
+  /// Constructor para la clase CrearCuenta.
+  ///
+  /// [onTap]: Función para manejar eventos de tap.
   CrearCuenta({Key? key, required this.onTap}) : super(key: key);
 
   @override
@@ -12,27 +17,31 @@ class CrearCuenta extends StatefulWidget {
 }
 
 class EstadoCrearCuenta extends State<CrearCuenta> {
-  final email = TextEditingController();
-  final nombre = TextEditingController();
-  final contrasena = TextEditingController();
-  final RepiteContrasena = TextEditingController();
+  final emailController = TextEditingController();
+  final nombreController = TextEditingController();
+  final contrasenaController = TextEditingController();
+  final RepiteContrasenaController = TextEditingController();
 
+  /// Navega a la pantalla menú principal inicial después de crear la cuenta.
+  ///
+  /// [context]: Contexto actual de la aplicación.
   void IrAInversion(BuildContext context) {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-          builder: (context) => Inversion(
-                onTap: () {},
-              )),
+          builder: (context) => MenuPrincipalInicial()), // Navegación al menú principal inicial
     );
   }
 
+  /// Intenta crear una nueva cuenta de usuario utilizando los datos ingresados.
+  ///
+  /// Maneja la creación de cuenta, validación de contraseña y muestra mensajes de error.
   void CreacionCuenta() async {
     try {
-      if (contrasena.text == RepiteContrasena.text) {
+      if (contrasenaController.text == RepiteContrasenaController.text) {
         UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: email.text,
-          password: contrasena.text,
+          email: emailController.text,
+          password: contrasenaController.text,
         );
         await userCredential.user!.sendEmailVerification();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -40,7 +49,7 @@ class EstadoCrearCuenta extends State<CrearCuenta> {
             content: Text('Cuenta creada correctamente. Por favor, verifica tu correo electrónico.'),
           ),
         );
-        IrAInversion(context);
+        IrAInversion(context); // Llama a la función para navegar al menú principal inicial
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Las contraseñas no coinciden')),
@@ -79,7 +88,6 @@ class EstadoCrearCuenta extends State<CrearCuenta> {
               children: [
                 const SizedBox(height: 20),
 
-                //logo
                 Image.asset(
                   'lib/imagenes/logo.png',
                   width: 200,
@@ -87,41 +95,19 @@ class EstadoCrearCuenta extends State<CrearCuenta> {
                   fit: BoxFit.contain,
                 ),
 
-                const SizedBox(height: 30),
+                const SizedBox(height: 60),
 
-                //Escribir nombre
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextField(
-                    controller: nombre,
+                    controller: emailController,
                     obscureText: false,
                     decoration: InputDecoration(
                         enabledBorder: const OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white)),
                         focusedBorder: OutlineInputBorder(
                             borderSide:
-                                BorderSide(color: Colors.grey.shade400)),
-                        fillColor: Colors.grey.shade200,
-                        filled: true,
-                        hintText: 'Nombre',
-                        hintStyle: TextStyle(color: Colors.grey[500])),
-                  ),
-                ),
-
-                const SizedBox(height: 10),
-
-                //Escribir email
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: TextField(
-                    controller: email,
-                    obscureText: false,
-                    decoration: InputDecoration(
-                        enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white)),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.grey.shade400)),
+                            BorderSide(color: Colors.grey.shade400)),
                         fillColor: Colors.grey.shade200,
                         filled: true,
                         hintText: 'Email',
@@ -131,18 +117,17 @@ class EstadoCrearCuenta extends State<CrearCuenta> {
 
                 const SizedBox(height: 10),
 
-                //Escribir contraseña
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextField(
-                    controller: contrasena,
+                    controller: contrasenaController,
                     obscureText: true,
                     decoration: InputDecoration(
                         enabledBorder: const OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white)),
                         focusedBorder: OutlineInputBorder(
                             borderSide:
-                                BorderSide(color: Colors.grey.shade400)),
+                            BorderSide(color: Colors.grey.shade400)),
                         fillColor: Colors.grey.shade200,
                         filled: true,
                         hintText: 'Contraseña',
@@ -152,18 +137,17 @@ class EstadoCrearCuenta extends State<CrearCuenta> {
 
                 const SizedBox(height: 10),
 
-                //Repetir contraseña
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextField(
-                    controller: RepiteContrasena,
+                    controller: RepiteContrasenaController,
                     obscureText: true,
                     decoration: InputDecoration(
                         enabledBorder: const OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white)),
                         focusedBorder: OutlineInputBorder(
                             borderSide:
-                                BorderSide(color: Colors.grey.shade400)),
+                            BorderSide(color: Colors.grey.shade400)),
                         fillColor: Colors.grey.shade200,
                         filled: true,
                         hintText: 'Repite la contraseña',
@@ -173,10 +157,9 @@ class EstadoCrearCuenta extends State<CrearCuenta> {
 
                 const SizedBox(height: 25),
 
-                //boton crear cuenta
                 GestureDetector(
                   onTap: () {
-                    CreacionCuenta();
+                    CreacionCuenta(); // Llama al método para crear la cuenta al hacer tap
                   },
                   child: Container(
                     padding: const EdgeInsets.all(25),
@@ -197,7 +180,6 @@ class EstadoCrearCuenta extends State<CrearCuenta> {
 
                 const SizedBox(height: 50),
 
-                //¿Ya eres miembro? Inicia Sesion
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -209,7 +191,7 @@ class EstadoCrearCuenta extends State<CrearCuenta> {
                     GestureDetector(
                       onTap: () => Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => InicioSesion()),
+                        MaterialPageRoute(builder: (context) => InicioSesion()), // Navegación a la pantalla de inicio de sesión
                       ),
                       child: const Text(
                         'Inicia sesión',

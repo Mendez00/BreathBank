@@ -15,38 +15,39 @@ class Ejercicio3 extends StatefulWidget {
 }
 
 class _EstadoEjercicio3 extends State<Ejercicio3> {
-  final TextEditingController subirDatos = TextEditingController();
-  bool _completado = true;
-  late AudioPlayer _audioPlayer;
-  bool _isPlaying = false;
+  final TextEditingController subirDatos = TextEditingController(); // Controlador para el campo de texto
+  bool _completado = true; // Variable para controlar si el ejercicio está completado
+  late AudioPlayer _audioPlayer; // Reproductor de audio
+  bool _isPlaying = false; // Estado de reproducción del audio
 
   @override
   void initState() {
     super.initState();
-    _audioPlayer = AudioPlayer();
+    _audioPlayer = AudioPlayer(); // Inicialización del reproductor de audio
   }
 
   @override
   void dispose() {
-    _audioPlayer.dispose();
+    _audioPlayer.dispose(); // Liberación de recursos del reproductor de audio
     super.dispose();
   }
 
+  // Función para reproducir o pausar el audio
   void _playAudio() async {
     if (_isPlaying) {
-      await _audioPlayer.stop();
+      await _audioPlayer.stop(); // Detener la reproducción si está reproduciendo
       setState(() {
-        _isPlaying = false;
+        _isPlaying = false; // Actualizar el estado de reproducción
       });
     } else {
       try {
-        await _audioPlayer.setAsset('assets/audio/guia.mp3');
-        await _audioPlayer.play();
+        await _audioPlayer.setAsset('assets/audio/guia.mp3'); // Cargar el audio desde los assets
+        await _audioPlayer.play(); // Reproducir el audio
         setState(() {
-          _isPlaying = true;
+          _isPlaying = true; // Actualizar el estado de reproducción
         });
       } catch (error) {
-        print('Error al reproducir audio: $error');
+        print('Error al reproducir audio: $error'); // Manejo de errores de reproducción
       }
     }
   }
@@ -73,7 +74,7 @@ class _EstadoEjercicio3 extends State<Ejercicio3> {
                         ),
                       ),
                       TextSpan(
-                        text: 'Lea la ayuda y después utiliza el audio-guía para completar el ejercicio',
+                        text: 'Lee la ayuda y después utiliza el audio-guía para completar el ejercicio',
                         style: TextStyle(
                           fontSize: 20,
                         ),
@@ -89,6 +90,7 @@ class _EstadoEjercicio3 extends State<Ejercicio3> {
                 iconSize: 50,
                 color: Colors.lightBlueAccent,
                 onPressed: () {
+                  // Mostrar diálogo de ayuda
                   showDialog(
                     context: context,
                     builder: (context) {
@@ -112,10 +114,10 @@ class _EstadoEjercicio3 extends State<Ejercicio3> {
               ),
               const SizedBox(height: 10),
               IconButton(
-                icon: Icon(_isPlaying ? Icons.pause_circle : Icons.play_circle),
+                icon: Icon(_isPlaying ? Icons.pause_circle : Icons.play_circle), // Icono de reproducción o pausa dependiendo del estado
                 iconSize: 50,
                 color: Colors.lightBlueAccent,
-                onPressed: _playAudio,
+                onPressed: _playAudio, // Función para manejar la reproducción del audio
               ),
               const SizedBox(height: 40),
               Padding(
@@ -132,7 +134,7 @@ class _EstadoEjercicio3 extends State<Ejercicio3> {
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
-                  guardarDatos(context);
+                  guardarDatos(context); // Función para guardar los datos en Firestore
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
@@ -155,22 +157,25 @@ class _EstadoEjercicio3 extends State<Ejercicio3> {
     );
   }
 
+  // Función para guardar los datos en Firestore
   void guardarDatos(BuildContext context) async {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(); // Inicialización de Firebase
 
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    FirebaseFirestore firestore = FirebaseFirestore.instance; // Instancia de Firestore
 
-    final FirebaseAuth auth = FirebaseAuth.instance;
+    final FirebaseAuth auth = FirebaseAuth.instance; // Instancia de FirebaseAuth para obtener el usuario actual
     User? user = auth.currentUser;
 
-    int nivelAlcanzado = int.tryParse(subirDatos.text) ?? 0;
+    int nivelAlcanzado = int.tryParse(subirDatos.text) ?? 0; // Obtención del nivel alcanzado desde el campo de texto
 
     try {
-      String username = user!.uid;
+      String username = user!.uid; // Obtención del UID del usuario actual
       DocumentReference userDocRef =
-      firestore.collection('Prueba de nivel').doc(username);
-      Timestamp fechaActual = Timestamp.now();
+      firestore.collection('Prueba de nivel').doc(username); // Referencia al documento del usuario
 
+      Timestamp fechaActual = Timestamp.now(); // Timestamp de la fecha actual
+
+      // Consulta para obtener la última prueba y actualizar sus datos
       QuerySnapshot querySnapshot = await userDocRef
           .collection('Pruebas')
           .orderBy('fecha1', descending: true)
@@ -178,30 +183,32 @@ class _EstadoEjercicio3 extends State<Ejercicio3> {
           .get();
 
       DocumentReference pruebaDocRef =
-      userDocRef.collection('Pruebas').doc(querySnapshot.docs.last.id);
+      userDocRef.collection('Pruebas').doc(querySnapshot.docs.last.id); // Referencia al documento de la última prueba
 
+      // Datos a actualizar en Firestore
       Map<String, dynamic> mediaData = {
         'Ej3': nivelAlcanzado,
         'fecha3': fechaActual,
       };
 
+      // Actualización de los datos en Firestore
       await pruebaDocRef.update(mediaData);
 
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Datos guardados correctamente'),
+        content: Text('Datos guardados correctamente'), // Mensaje de confirmación
         duration: Duration(seconds: 2),
       ));
 
       setState(() {
-        _completado = true;
+        _completado = true; // Actualizar el estado de completado
       });
-      widget.onEjercicioCompleto();
+      widget.onEjercicioCompleto(); // Llamar al callback cuando se completa el ejercicio
 
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Resumen()));
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Resumen())); // Navegar a la página de resumen
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Error al guardar los datos: $error'),
+        content: Text('Error al guardar los datos: $error'), // Mensaje de error en caso de falla
         duration: Duration(seconds: 10),
       ));
     }

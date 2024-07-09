@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:country_picker/country_picker.dart';
-import 'drawer.dart';
+import 'package:breath_bank/Paginas/drawer.dart';
 
 class Perfil extends StatefulWidget {
   final Function()? onTap;
@@ -28,13 +28,15 @@ class EstadoPerfil extends State<Perfil> {
   void initState() {
     super.initState();
     _getUserInfo();
+    _loadOriginData();
   }
 
+  // Método para obtener información del usuario desde Firebase Authentication y Firestore
   Future<void> _getUserInfo() async {
     User? user = _auth.currentUser;
     if (user != null) {
       setState(() {
-        displayName = user.displayName ?? '';
+        displayName = user.displayName ?? ''; // Nombre de usuario
       });
 
       String userId = user.uid;
@@ -52,15 +54,10 @@ class EstadoPerfil extends State<Perfil> {
         if (resumenSnapshot.exists) {
           Map<String, dynamic> data = resumenSnapshot.data() as Map<String, dynamic>;
 
-          print("Data from Firestore: $data");
-
           setState(() {
-            _nivelInversor = data['Nivel Inversor'] ?? 0;
-            Timestamp fecha = data['fecha1'] ?? Timestamp.now();
-            _fechaInversion = DateFormat('dd-MM-yyyy – kk:mm').format(fecha.toDate());
-
-            print("Nivel Inversor: $_nivelInversor");
-            print("Fecha Inversión: $_fechaInversion");
+            _nivelInversor = data['Nivel Inversor'] ?? 0; // Nivel de inversor del usuario
+            Timestamp fecha = data['fecha1'] ?? Timestamp.now(); // Fecha de la última inversión
+            _fechaInversion = DateFormat('dd-MM-yyyy – kk:mm').format(fecha.toDate()); // Formateo de fecha
           });
         } else {
           print("No existe documento de resumen para el usuario");
@@ -73,18 +70,36 @@ class EstadoPerfil extends State<Perfil> {
     }
   }
 
+  // Método para cargar información de origen (país y provincia) del usuario desde Firestore
+  Future<void> _loadOriginData() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      DocumentSnapshot snapshot = await _firestore.collection('Lugar del usuario').doc(user.uid).get();
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+        setState(() {
+          _selectedCountry = data['pais'] ?? 'Seleccione su país'; // País seleccionado
+          _selectedProvince = data['provincia'] ?? 'Seleccione su provincia'; // Provincia seleccionada
+        });
+      }
+    }
+  }
+
+  // Método para mostrar el selector de país
   void _showCountryPicker() {
     showCountryPicker(
       context: context,
       showPhoneCode: false,
       onSelect: (Country country) {
         setState(() {
-          _selectedCountry = country.name == "Spain" ? "España" : country.name;
+          _selectedCountry = country.name == "Spain" ? "España" : country.name; // Actualiza el país seleccionado
         });
       },
     );
   }
 
+  // Método para mostrar el selector de provincia
   void _showProvincePicker() {
     showDialog(
       context: context,
@@ -101,7 +116,7 @@ class EstadoPerfil extends State<Perfil> {
                   title: Text(provinciasEspana[index]),
                   onTap: () {
                     setState(() {
-                      _selectedProvince = provinciasEspana[index];
+                      _selectedProvince = provinciasEspana[index]; // Actualiza la provincia seleccionada
                     });
                     Navigator.pop(context);
                   },
@@ -114,6 +129,7 @@ class EstadoPerfil extends State<Perfil> {
     );
   }
 
+  // Método para guardar la selección de país y provincia en Firestore
   Future<void> _saveOrigin() async {
     User? user = _auth.currentUser;
     if (user != null) {
@@ -130,10 +146,10 @@ class EstadoPerfil extends State<Perfil> {
     String? email = user?.email;
 
     return Scaffold(
-      drawer: MyDrawer(),
+      drawer: MyDrawer(), // Drawer personalizado
       appBar: AppBar(
         backgroundColor: Colors.lightBlueAccent,
-        title: Text('Perfil'),
+        title: Text('Perfil'), // Título de la AppBar
         centerTitle: true,
         elevation: 0,
         leading: Builder(
@@ -143,7 +159,7 @@ class EstadoPerfil extends State<Perfil> {
               color: Colors.black,
             ),
             onPressed: () {
-              Scaffold.of(context).openDrawer();
+              Scaffold.of(context).openDrawer(); // Abre el drawer al presionar el ícono del menú
             },
           ),
         ),
@@ -157,7 +173,7 @@ class EstadoPerfil extends State<Perfil> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '¡Hola $displayName!',
+                  '¡Hola $displayName!', // Saludo al usuario
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -167,28 +183,29 @@ class EstadoPerfil extends State<Perfil> {
                 const SizedBox(width: 5),
                 RichText(
                   text: TextSpan(
-                    text: email,
+                    text: email, // Correo electrónico del usuario
                     style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blueAccent),
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blueAccent,
+                    ),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 40),
             Text(
-              'Nivel de inversor: $_nivelInversor',
+              'Nivel de inversor: $_nivelInversor', // Muestra el nivel de inversor del usuario
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 30),
             Text(
-              'Fecha de inversión: $_fechaInversion',
-              style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
+              'Fecha de inversión: $_fechaInversion', // Muestra la última fecha de inversión del usuario
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 30),
             Text(
-              '¿Desde dónde realizas las inversiones?',
+              '¿Desde dónde realizas las inversiones?', // Título para la selección de país y provincia
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               textAlign: TextAlign.left,
             ),
@@ -208,10 +225,10 @@ class EstadoPerfil extends State<Perfil> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      _selectedCountry,
+                      _selectedCountry, // Muestra el país seleccionado
                       style: TextStyle(fontSize: 16),
                     ),
-                    Icon(Icons.arrow_drop_down),
+                    Icon(Icons.arrow_drop_down), // Icono de despliegue para seleccionar país
                   ],
                 ),
               ),
@@ -232,17 +249,17 @@ class EstadoPerfil extends State<Perfil> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      _selectedProvince,
+                      _selectedProvince, // Muestra la provincia seleccionada
                       style: TextStyle(fontSize: 16),
                     ),
-                    Icon(Icons.arrow_drop_down),
+                    Icon(Icons.arrow_drop_down), // Icono de despliegue para seleccionar provincia
                   ],
                 ),
               ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _saveOrigin,
+              onPressed: _saveOrigin, // Guarda la selección de país y provincia
               child: Text(
                 'Guardar Origen',
                 style: TextStyle(fontSize: 18.0),
@@ -266,6 +283,7 @@ class EstadoPerfil extends State<Perfil> {
   }
 }
 
+// Lista de provincias de España para el selector de provincias
 const List<String> provinciasEspana = [
   'Álava',
   'Albacete',

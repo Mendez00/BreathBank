@@ -1,33 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:breath_bank/Paginas/resumen.dart';
 import 'package:breath_bank/Paginas/ejercicio1.dart';
 import 'package:breath_bank/Paginas/ejercicio2.dart';
 import 'package:breath_bank/Paginas/ejercicio3.dart';
 
+// Enumeración para representar los estados de los ejercicios
 enum EstadoEjercicio { Pendiente, Completado, Bloqueado }
 
+// Widget principal que representa la pantalla de Inversión
 class Inversion extends StatefulWidget {
-  final VoidCallback onTap;
+  final VoidCallback onTap; // Función de retorno al tocar
   const Inversion({required this.onTap});
 
   @override
   State<Inversion> createState() => EstadoInversion();
 }
 
+// Estado de la pantalla de Inversión
 class EstadoInversion extends State<Inversion> {
-  final PageController _pageController = PageController();
-  bool flechaBloqueada = true;
-  int paginaActual = 0;
-  var estadoEjercicio1;
-  var estadoEjercicio2;
-  var estadoEjercicio3;
+  final PageController _pageController = PageController(); // Controlador de la página
+  bool flechaBloqueada = true; // Estado de bloqueo de flecha (no utilizado en el código proporcionado)
+  int paginaActual = 0; // Índice de la página actual
+  var estadoEjercicio1; // Estado del ejercicio 1
+  var estadoEjercicio2; // Estado del ejercicio 2
+  var estadoEjercicio3; // Estado del ejercicio 3
 
   @override
   void initState() {
     super.initState();
-    estadoEjercicio1 = EstadoEjercicio.Pendiente;
-    estadoEjercicio2 = EstadoEjercicio.Bloqueado;
-    estadoEjercicio3 = EstadoEjercicio.Bloqueado;
+    estadoEjercicio1 = EstadoEjercicio.Pendiente; // Inicialización del estado del ejercicio 1 como Pendiente
+    estadoEjercicio2 = EstadoEjercicio.Bloqueado; // Inicialización del estado del ejercicio 2 como Bloqueado
+    estadoEjercicio3 = EstadoEjercicio.Bloqueado; // Inicialización del estado del ejercicio 3 como Bloqueado
   }
 
   @override
@@ -35,23 +37,23 @@ class EstadoInversion extends State<Inversion> {
     return Scaffold(
       body: Column(
         children: [
-          const SizedBox(height: 100),
+          const SizedBox(height: 100), // Espacio en blanco
           Expanded(
             child: PageView(
-              controller: _pageController,
+              controller: _pageController, // Controlador de la página para el PageView
               onPageChanged: (int page) {
                 setState(() {
-                  paginaActual = page;
+                  paginaActual = page; // Actualizar la página actual cuando se cambia de página
                 });
               },
               children: [
-                buildEjercicio1Container(),
-                buildEjercicio2Container(),
-                buildEjercicio3Container(),
+                buildEjercicio1Container(), // Contenedor del ejercicio 1
+                buildEjercicio2Container(), // Contenedor del ejercicio 2
+                buildEjercicio3Container(), // Contenedor del ejercicio 3
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 20), // Espacio en blanco
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Row(
@@ -61,36 +63,36 @@ class EstadoInversion extends State<Inversion> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: CircleAvatar(
-                      backgroundColor:
-                      i == paginaActual ? Colors.lightBlueAccent : Colors.grey,
+                      backgroundColor: i == paginaActual ? Colors.lightBlueAccent : Colors.grey, // Color del indicador de página actual
                       radius: 10,
                     ),
                   ),
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 20), // Espacio en blanco
         ],
       ),
     );
   }
 
+  // Constructor del contenedor del ejercicio 1
   Widget buildEjercicio1Container() {
     return Container(
       width: 100,
       height: 100,
       decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.grey[200], // Color de fondo del contenedor
+        borderRadius: BorderRadius.circular(12), // Borde redondeado del contenedor
       ),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Image.asset(
-              'lib/imagenes/E1.png',
-              width: 200,
-              height: 100,
+              'lib/imagenes/Ej1.png', // Imagen del ejercicio 1
+              width: 250,
+              height: 150,
               fit: BoxFit.contain,
             ),
             const Text.rich(
@@ -105,7 +107,7 @@ class EstadoInversion extends State<Inversion> {
                   ),
                   TextSpan(
                     text:
-                        'Tumbado boca arriba, realiza un minuto de respiraciones relajadas, y después cuenta las respiraciones que realices en el siguiente minuto.',
+                    'Tumbado boca arriba, realiza un minuto de respiraciones relajadas, y después cuenta las respiraciones que realices en el siguiente minuto.',
                     style: TextStyle(
                       fontSize: 16,
                     ),
@@ -114,18 +116,18 @@ class EstadoInversion extends State<Inversion> {
               ),
               textAlign: TextAlign.center,
             ),
-            buildBotton(
-              'Ejercicio 1',
-              estadoEjercicio1,
-              () {
+            buildBotton( // Botón del ejercicio 1
+              'Ejercicio 1', // Texto del botón
+              estadoEjercicio1, // Estado del botón
+                  () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => Ejercicio1(
                       onEjercicioCompleto: () {
                         setState(() {
-                          estadoEjercicio1 = EstadoEjercicio.Completado;
-                          estadoEjercicio2 = EstadoEjercicio.Pendiente;
+                          estadoEjercicio1 = EstadoEjercicio.Completado; // Actualización del estado del ejercicio 1 a Completado
+                          estadoEjercicio2 = EstadoEjercicio.Pendiente; // Actualización del estado del ejercicio 2 a Pendiente
                         });
                       },
                     ),
@@ -139,22 +141,23 @@ class EstadoInversion extends State<Inversion> {
     );
   }
 
+  // Constructor del contenedor del ejercicio 2
   Widget buildEjercicio2Container() {
     return Container(
       width: 100,
       height: 100,
       decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.grey[200], // Color de fondo del contenedor
+        borderRadius: BorderRadius.circular(12), // Borde redondeado del contenedor
       ),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Image.asset(
-              'lib/imagenes/E1.png',
-              width: 200,
-              height: 100,
+              'lib/imagenes/Ej2.png', // Imagen del ejercicio 2
+              width: 250,
+              height: 150,
               fit: BoxFit.contain,
             ),
             const Text.rich(
@@ -169,7 +172,7 @@ class EstadoInversion extends State<Inversion> {
                   ),
                   TextSpan(
                     text:
-                        'Tumbado boca arriba, cuenta cuanto tardas en realizar tres respiraciones lentas. Hazlo 3 veces y halla la media de las 3',
+                    'Tumbado boca arriba, cuenta cuanto tardas en realizar tres respiraciones lentas. Hazlo 3 veces y halla la media de las 3',
                     style: TextStyle(
                       fontSize: 16,
                     ),
@@ -178,18 +181,18 @@ class EstadoInversion extends State<Inversion> {
               ),
               textAlign: TextAlign.center,
             ),
-            buildBotton(
-              'Ejercicio 2',
-              estadoEjercicio2,
-              () {
+            buildBotton( // Botón del ejercicio 2
+              'Ejercicio 2', // Texto del botón
+              estadoEjercicio2, // Estado del botón
+                  () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => Ejercicio2(
                       onEjercicioCompleto: () {
                         setState(() {
-                          estadoEjercicio2 = EstadoEjercicio.Completado;
-                          estadoEjercicio3 = EstadoEjercicio.Pendiente;
+                          estadoEjercicio2 = EstadoEjercicio.Completado; // Actualización del estado del ejercicio 2 a Completado
+                          estadoEjercicio3 = EstadoEjercicio.Pendiente; // Actualización del estado del ejercicio 3 a Pendiente
                         });
                       },
                     ),
@@ -203,22 +206,23 @@ class EstadoInversion extends State<Inversion> {
     );
   }
 
+  // Constructor del contenedor del ejercicio 3
   Widget buildEjercicio3Container() {
     return Container(
       width: 100,
       height: 100,
       decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.grey[200], // Color de fondo del contenedor
+        borderRadius: BorderRadius.circular(12), // Borde redondeado del contenedor
       ),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Image.asset(
-              'lib/imagenes/E1.png',
-              width: 200,
-              height: 100,
+              'lib/imagenes/Ej3.png', // Imagen del ejercicio 3
+              width: 250,
+              height: 150,
               fit: BoxFit.contain,
             ),
             const Text.rich(
@@ -233,7 +237,7 @@ class EstadoInversion extends State<Inversion> {
                   ),
                   TextSpan(
                     text:
-                        'Tumbado boca arriba, y con la ayuda del audio, sigue las ordenes de inspiración y espiración que marca el pitido, hasta el último número que llegues sin perder el orden de las respiraciones.',
+                    'Tumbado boca arriba, y con la ayuda del audio, sigue las ordenes de inspiración y espiración que marca el pitido, hasta el último número que llegues sin perder el orden de las respiraciones.',
                     style: TextStyle(
                       fontSize: 16,
                     ),
@@ -242,17 +246,17 @@ class EstadoInversion extends State<Inversion> {
               ),
               textAlign: TextAlign.center,
             ),
-            buildBotton(
-              'Ejercicio 3',
-              estadoEjercicio3,
-              () {
-                Navigator.push(
+            buildBotton( // Botón del ejercicio 3
+              'Ejercicio 3', // Texto del botón
+              estadoEjercicio3, // Estado del botón
+                  () {
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (context) => Ejercicio3(
                       onEjercicioCompleto: () {
                         setState(() {
-                          estadoEjercicio3 = EstadoEjercicio.Completado;
+                          estadoEjercicio3 = EstadoEjercicio.Completado; // Actualización del estado del ejercicio 3 a Completado
                         });
                       },
                     ),
@@ -267,12 +271,14 @@ class EstadoInversion extends State<Inversion> {
   }
 }
 
+// Función para construir el botón del ejercicio
 Widget buildBotton(
     String texto, EstadoEjercicio estado, VoidCallback onPressed) {
-  Color backgroundColor;
-  String buttonText;
-  bool isEnabled;
+  Color backgroundColor; // Color de fondo del botón
+  String buttonText; // Texto del botón
+  bool isEnabled; // Estado de habilitación del botón
 
+  // Switch para determinar el color, texto y habilitación del botón basado en el estado del ejercicio
   switch (estado) {
     case EstadoEjercicio.Pendiente:
       backgroundColor = Colors.lightBlueAccent;
@@ -291,18 +297,19 @@ Widget buildBotton(
       break;
   }
 
+  // Retorna un ElevatedButton con estilo definido
   return ElevatedButton(
-    onPressed: isEnabled ? onPressed : null,
+    onPressed: isEnabled ? onPressed : null, // Habilita el botón solo si está permitido
     style: ElevatedButton.styleFrom(
       foregroundColor: Colors.white,
-      backgroundColor: backgroundColor,
+      backgroundColor: backgroundColor, // Aplica el color de fondo determinado
       padding: const EdgeInsets.symmetric(vertical: 35.0, horizontal: 75.0),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12), // Borde redondeado del botón
       ),
     ),
     child: Text(
-      buttonText,
+      buttonText, // Texto del botón definido por el estado
       style: const TextStyle(fontSize: 25.0),
     ),
   );

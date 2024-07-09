@@ -7,24 +7,23 @@ import 'dart:async';
 class Ejercicio2 extends StatefulWidget {
   final VoidCallback onEjercicioCompleto;
 
-  const Ejercicio2({Key? key, required this.onEjercicioCompleto})
-      : super(key: key);
+  const Ejercicio2({Key? key, required this.onEjercicioCompleto}) : super(key: key);
 
   @override
   State<Ejercicio2> createState() => EstadoEjercicio2();
 }
 
 class EstadoEjercicio2 extends State<Ejercicio2> {
-  bool _completado = true;
+  bool _completado = true; // Variable para controlar si el ejercicio está completado
 
-  final TextEditingController dato1 = TextEditingController();
-  final TextEditingController dato2 = TextEditingController();
-  final TextEditingController dato3 = TextEditingController();
-  int media = 0;
+  final TextEditingController dato1 = TextEditingController(); // Controlador para el primer dato de tiempo
+  final TextEditingController dato2 = TextEditingController(); // Controlador para el segundo dato de tiempo
+  final TextEditingController dato3 = TextEditingController(); // Controlador para el tercer dato de tiempo
+  int media = 0; // Variable para calcular y almacenar la media de los tiempos
 
-  Timer? contador;
-  int tiempo = 0;
-  bool cronoActivo = false;
+  Timer? contador; // Timer para el cronómetro
+  int tiempo = 0; // Variable para almacenar el tiempo del cronómetro
+  bool cronoActivo = false; // Variable para controlar el estado del cronómetro
 
   @override
   void dispose() {
@@ -35,38 +34,44 @@ class EstadoEjercicio2 extends State<Ejercicio2> {
     super.dispose();
   }
 
+  // Función para iniciar o reiniciar el cronómetro
   void iniciarContador() {
-    setState(() {
-      tiempo = 0;
-      cronoActivo = true;
-    });
-    contador?.cancel();
-    contador = Timer.periodic(Duration(seconds: 1), (timer) {
+    if (cronoActivo) {
+      resetContador();
+    } else {
       setState(() {
-        tiempo++;
+        tiempo = 0;
+        cronoActivo = true;
       });
-    });
+      contador?.cancel();
+      contador = Timer.periodic(Duration(seconds: 1), (timer) {
+        setState(() {
+          tiempo++;
+        });
+      });
+    }
   }
 
+  // Función para detener o continuar el cronómetro
   void pararContador() {
-    contador?.cancel();
-    setState(() {
-      cronoActivo = false;
-    });
-  }
-
-  void continuarContador() {
-    setState(() {
-      cronoActivo = true;
-    });
-    contador?.cancel();
-    contador = Timer.periodic(Duration(seconds: 1), (timer) {
+    if (cronoActivo) {
+      contador?.cancel();
       setState(() {
-        tiempo++;
+        cronoActivo = false;
       });
-    });
+    } else {
+      setState(() {
+        cronoActivo = true;
+      });
+      contador = Timer.periodic(Duration(seconds: 1), (timer) {
+        setState(() {
+          tiempo++;
+        });
+      });
+    }
   }
 
+  // Función para reiniciar el cronómetro
   void resetContador() {
     contador?.cancel();
     setState(() {
@@ -97,8 +102,7 @@ class EstadoEjercicio2 extends State<Ejercicio2> {
                         ),
                       ),
                       TextSpan(
-                        text:
-                            'Lea la ayuda y después utiliza el cronómetro para completar el ejercicio',
+                        text: 'Lee la ayuda y después utiliza el cronómetro para completar el ejercicio',
                         style: TextStyle(
                           fontSize: 20,
                         ),
@@ -114,6 +118,7 @@ class EstadoEjercicio2 extends State<Ejercicio2> {
                 iconSize: 50,
                 color: Colors.lightBlueAccent,
                 onPressed: () {
+                  // Mostrar diálogo de ayuda
                   showDialog(
                     context: context,
                     builder: (context) {
@@ -154,14 +159,14 @@ class EstadoEjercicio2 extends State<Ejercicio2> {
                       primary: Colors.lightBlueAccent,
                       onPrimary: Colors.white,
                     ),
-                    child: const Text(
-                      'Iniciar',
+                    child: Text(
+                      cronoActivo ? 'Reiniciar' : 'Iniciar',
                       style: TextStyle(fontSize: 18.0),
                     ),
                   ),
                   const SizedBox(width: 10),
                   ElevatedButton(
-                    onPressed: cronoActivo ? pararContador : continuarContador,
+                    onPressed: pararContador,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                           vertical: 15.0, horizontal: 25.0),
@@ -176,26 +181,10 @@ class EstadoEjercicio2 extends State<Ejercicio2> {
                       style: TextStyle(fontSize: 18.0),
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: resetContador,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 15.0, horizontal: 25.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      primary: Colors.orange,
-                      onPrimary: Colors.white,
-                    ),
-                    child: const Text(
-                      'Reiniciar',
-                      style: TextStyle(fontSize: 18.0),
-                    ),
-                  ),
                 ],
               ),
               const SizedBox(height: 20),
+              // Campos para ingresar los tiempos de cada ronda
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: TextField(
@@ -232,6 +221,7 @@ class EstadoEjercicio2 extends State<Ejercicio2> {
                 ),
               ),
               const SizedBox(height: 20),
+              // Botón para guardar los datos en Firestore
               ElevatedButton(
                 onPressed: () {
                   guardarDatos(context);
@@ -257,25 +247,31 @@ class EstadoEjercicio2 extends State<Ejercicio2> {
     );
   }
 
+  // Función para guardar los datos en Firestore
   void guardarDatos(BuildContext context) async {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(); // Inicialización de Firebase
 
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    FirebaseFirestore firestore = FirebaseFirestore.instance; // Instancia de Firestore
 
-    final FirebaseAuth auth = FirebaseAuth.instance;
+    final FirebaseAuth auth = FirebaseAuth.instance; // Instancia de FirebaseAuth para obtener el usuario actual
     User? user = auth.currentUser;
 
+    // Obtención de los valores ingresados en los campos de texto
     int dato1Valor = int.tryParse(dato1.text) ?? 0;
     int dato2Valor = int.tryParse(dato2.text) ?? 0;
     int dato3Valor = int.tryParse(dato3.text) ?? 0;
 
+    // Cálculo de la media de los tiempos
     media = (dato1Valor + dato2Valor + dato3Valor) ~/ 3;
-    try {
-      String username = user!.uid;
-      DocumentReference userDocRef =
-          firestore.collection('Prueba de nivel').doc(username);
-      Timestamp fechaActual = Timestamp.now();
 
+    try {
+      String username = user!.uid; // Obtención del UID del usuario actual
+      DocumentReference userDocRef =
+      firestore.collection('Prueba de nivel').doc(username); // Referencia al documento del usuario
+
+      Timestamp fechaActual = Timestamp.now(); // Timestamp de la fecha actual
+
+      // Consulta para obtener la última prueba y actualizar sus datos
       QuerySnapshot querySnapshot = await userDocRef
           .collection('Pruebas')
           .orderBy('fecha1', descending: true)
@@ -284,8 +280,9 @@ class EstadoEjercicio2 extends State<Ejercicio2> {
 
       if (querySnapshot.docs.isNotEmpty) {
         DocumentReference pruebaDocRef =
-            userDocRef.collection('Pruebas').doc(querySnapshot.docs.last.id);
+        userDocRef.collection('Pruebas').doc(querySnapshot.docs.last.id);
 
+        // Datos a actualizar en Firestore
         Map<String, dynamic> mediaData = {
           'Ej2 Intento 1': dato1Valor,
           'Ej2 Intento 2': dato2Valor,
@@ -294,7 +291,9 @@ class EstadoEjercicio2 extends State<Ejercicio2> {
           'fecha2': fechaActual,
         };
 
+        // Actualización de los datos en Firestore
         await pruebaDocRef.update(mediaData);
+
         setState(() {
           _completado = true;
         });

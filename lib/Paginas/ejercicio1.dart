@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
 
+/// Widget para la pantalla del Ejercicio 1.
 class Ejercicio1 extends StatefulWidget {
   final VoidCallback onEjercicioCompleto;
 
@@ -14,44 +15,44 @@ class Ejercicio1 extends StatefulWidget {
 }
 
 class EstadoEjercicio1 extends State<Ejercicio1> {
-  bool _completado = false;
-  bool cronoActivado = false;
-  Timer? contador;
-  int segunosRestantes = 60;
-  final TextEditingController subirDatos = TextEditingController();
+  bool _completado = false; // Variable para verificar si se ha completado el ejercicio
+  bool cronoActivado = false; // Variable para controlar el estado del cronómetro
+  Timer? contador; // Timer para contar el tiempo
+  int segunosRestantes = 60; // Tiempo inicial del cronómetro
+  final TextEditingController subirDatos = TextEditingController(); // Controlador del campo de texto para ingresar datos
 
   @override
   void dispose() {
-    subirDatos.dispose();
-    contador?.cancel();
+    subirDatos.dispose(); // Liberar recursos del controlador de texto
+    contador?.cancel(); // Cancelar el temporizador si está activo
     super.dispose();
   }
 
   void _startTimer() {
     setState(() {
-      cronoActivado = true;
-      segunosRestantes = 60;
+      cronoActivado = true; // Activar el cronómetro
+      segunosRestantes = 60; // Reiniciar el contador de tiempo
     });
 
     contador = Timer.periodic(Duration(seconds: 1), (timer) {
       if (segunosRestantes > 0) {
         setState(() {
-          segunosRestantes--;
+          segunosRestantes--; // Reducir el tiempo restante
         });
       } else {
-        contador?.cancel();
+        contador?.cancel(); // Cancelar el temporizador al llegar a cero
         setState(() {
-          cronoActivado = false;
+          cronoActivado = false; // Desactivar el cronómetro
         });
       }
     });
   }
 
   void resetContador() {
-    contador?.cancel();
+    contador?.cancel(); // Cancelar el temporizador si está activo
     setState(() {
-      segunosRestantes = 60;
-      cronoActivado = false;
+      segunosRestantes = 60; // Reiniciar el contador de tiempo
+      cronoActivado = false; // Desactivar el cronómetro
     });
   }
 
@@ -78,7 +79,7 @@ class EstadoEjercicio1 extends State<Ejercicio1> {
                       ),
                       TextSpan(
                         text:
-                        'Lea la ayuda y después utiliza el cronómetro para completar el ejercicio',
+                        'Lee la ayuda y después utiliza el cronómetro para completar el ejercicio',
                         style: TextStyle(
                           fontSize: 20,
                         ),
@@ -196,51 +197,62 @@ class EstadoEjercicio1 extends State<Ejercicio1> {
     );
   }
 
+  /// Método para guardar los datos del ejercicio en Firestore.
   void guardarDatos(BuildContext context) async {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(); // Inicializar Firebase si aún no se ha hecho
 
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    FirebaseFirestore firestore = FirebaseFirestore.instance; // Instancia de Firestore
 
-    final FirebaseAuth auth = FirebaseAuth.instance;
-    User? user = auth.currentUser;
+    final FirebaseAuth auth = FirebaseAuth.instance; // Instancia de FirebaseAuth
+    User? user = auth.currentUser; // Usuario actual autenticado
 
-    int respiraciones = int.tryParse(subirDatos.text) ?? 0;
+    int respiraciones = int.tryParse(subirDatos.text) ?? 0; // Obtener el número de respiraciones desde el campo de texto
 
     try {
-      String username = user!.uid;
+      String username = user!.uid; // Obtener el ID único del usuario
       DocumentReference userDocRef =
-          firestore.collection('Prueba de nivel').doc(username);
-      Timestamp fechaActual = Timestamp.now();
+      firestore.collection('Prueba de nivel').doc(username); // Referencia al documento del usuario
+      Timestamp fechaActual = Timestamp.now(); // Obtener la fecha y hora actual
 
-      int numeroPrueba = 1;
+      int numeroPrueba = 1; // Número inicial de la prueba
       QuerySnapshot querySnapshot =
-          await userDocRef.collection('Pruebas').get();
+      await userDocRef.collection('Pruebas').get(); // Obtener las pruebas existentes del usuario
       if (querySnapshot.docs.isNotEmpty) {
-        numeroPrueba = querySnapshot.docs.length + 1;
+        numeroPrueba = querySnapshot.docs.length + 1; // Determinar el número de la siguiente prueba
+      }
+
+      // Verificar y borrar documentos que no contienen Ej1, Ej2 y Ej3
+      for (var doc in querySnapshot.docs) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        if (!data.containsKey('Ej1') ||
+            !data.containsKey('Ej2') ||
+            !data.containsKey('Ej3')) {
+          await doc.reference.delete(); // Eliminar documentos no válidos
+        }
       }
 
       DocumentReference pruebaDocRef =
-          userDocRef.collection('Pruebas').doc('Prueba $numeroPrueba');
+      userDocRef.collection('Pruebas').doc('Prueba $numeroPrueba'); // Referencia a la nueva prueba
 
       Map<String, dynamic> ejercicioData = {
-        'fecha1': fechaActual,
-        'Ej1': respiraciones,
+        'fecha1': fechaActual, // Fecha y hora de la prueba
+        'Ej1': respiraciones, // Número de respiraciones registrado
       };
-      await pruebaDocRef.set(ejercicioData);
+      await pruebaDocRef.set(ejercicioData); // Guardar los datos de la prueba en Firestore
       setState(() {
-        _completado = true;
+        _completado = true; // Marcar el ejercicio como completado
       });
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Datos guardados correctamente'),
-        duration: Duration(seconds: 2),
+        content: Text('Datos guardados correctamente'), // Mensaje de éxito
+        duration: Duration(seconds: 2), // Duración del SnackBar
       ));
 
-      widget.onEjercicioCompleto();
-      Navigator.pop(context);
+      widget.onEjercicioCompleto(); // Llamar a la función proporcionada al completar el ejercicio
+      Navigator.pop(context); // Cerrar la pantalla actual y volver a la anterior
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Error al guardar los datos: $error'),
-        duration: Duration(seconds: 2),
+        content: Text('Error al guardar los datos: $error'), // Mensaje de error
+        duration: Duration(seconds: 2), // Duración del SnackBar
       ));
     }
   }

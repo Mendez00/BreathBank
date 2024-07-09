@@ -4,28 +4,28 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Resumen extends StatelessWidget {
-  final ResumenService resumenService = ResumenService();
+  final ResumenService resumenService = ResumenService(); // Instancia de ResumenService para acceder a métodos de servicio
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightBlueAccent,
-        title: const Text('Resumen'),
+        title: const Text('Resumen'), // Título de la AppBar
         centerTitle: true,
       ),
       body: FutureBuilder<Map<String, dynamic>>(
-        future: _obtenerResumen(),
+        future: _obtenerResumen(), // Llamada asincrónica para obtener el resumen
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator()); // Muestra un indicador de carga mientras se espera la respuesta
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(child: Text('Error: ${snapshot.error}')); // Muestra un mensaje de error si falla la obtención de datos
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No hay datos disponibles.'));
+            return const Center(child: Text('No hay datos disponibles.')); // Muestra un mensaje si no hay datos disponibles
           } else {
-            final resumen = snapshot.data!;
-            final nivelInversorEjercicio1 = _calcularNivelInversorEjercicio1(resumen['Ej1'] ?? 0);
+            final resumen = snapshot.data!; // Datos obtenidos correctamente
+            final nivelInversorEjercicio1 = _calcularNivelInversorEjercicio1(resumen['Ej1'] ?? 0); // Cálculo de niveles de inversor
             final nivelInversorEjercicio2 = _calcularNivelInversorEjercicio2(resumen['Ej2'] ?? 0);
             final nivelInversorEjercicio3 = _calcularNivelInversorEjercicio3(resumen['Ej3'] ?? 0);
             final nivelInversorTotal = _calcularNivelInversorTotal(
@@ -34,20 +34,20 @@ class Resumen extends StatelessWidget {
               nivelInversorEjercicio3,
             );
 
-            _guardarNivelInversorTotal(resumen['documentId'], nivelInversorTotal);
+            _guardarNivelInversorTotal(resumen['documentId'], nivelInversorTotal); // Actualiza el nivel de inversor total
 
             return Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 40.0),
-                  _buildTituloEjercicio1('Ejercicio 1', resumen['Ej1'] ?? 0, nivelInversorEjercicio1),
+                  _buildTituloEjercicio1('Ejercicio 1', resumen['Ej1'] ?? 0, nivelInversorEjercicio1), // Construye la sección para cada ejercicio
                   _buildTituloEjercicio2('Ejercicio 2', resumen['Ej2'] ?? 0, nivelInversorEjercicio2),
                   _buildTituloEjercicio3('Ejercicio 3', resumen['Ej3'] ?? 0, nivelInversorEjercicio3),
                   const SizedBox(height: 20.0),
-                  _buildTotalRow(nivelInversorTotal),
+                  _buildTotalRow(nivelInversorTotal), // Construye la fila para mostrar el nivel de inversor total
                   const SizedBox(height: 70.0),
-                  ElevatedButton(
+                  ElevatedButton( // Botón para continuar al menú principal
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
@@ -76,6 +76,7 @@ class Resumen extends StatelessWidget {
     );
   }
 
+  // Widgets para construir la información de cada ejercicio
   Widget _buildTituloEjercicio1(String ejercicio, int respiraciones, int nivelInversor) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -153,6 +154,7 @@ class Resumen extends StatelessWidget {
     );
   }
 
+  // Método para guardar el nivel de inversor total en la base de datos
   Future<void> _guardarNivelInversorTotal(String? documentoId, int nivelInversorTotal) async {
     User? user = FirebaseAuth.instance.currentUser;
 
@@ -161,6 +163,7 @@ class Resumen extends StatelessWidget {
     }
   }
 
+  // Método para obtener el resumen de la base de datos
   Future<Map<String, dynamic>> _obtenerResumen() async {
     User? user = FirebaseAuth.instance.currentUser;
 
@@ -177,6 +180,7 @@ class Resumen extends StatelessWidget {
     return resumen;
   }
 
+  // Métodos para calcular el nivel de inversor de cada ejercicio
   int _calcularNivelInversorEjercicio1(int valor) {
     if (valor >= 18) return 0;
     if (valor >= 16) return 1;
@@ -217,14 +221,17 @@ class Resumen extends StatelessWidget {
     return 0;
   }
 
+  // Método para calcular el nivel de inversor total
   int _calcularNivelInversorTotal(int nivelEjercicio1, int nivelEjercicio2, int nivelEjercicio3) {
     return (nivelEjercicio1 * 10 + nivelEjercicio2 * 30 + nivelEjercicio3 * 60) ~/ 100;
   }
 }
 
+// Clase de servicio para manejar operaciones relacionadas con la base de datos
 class ResumenService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  // Método para obtener el resumen de un usuario específico
   Future<Map<String, dynamic>> obtenerResumen(String nombreUsuario) async {
     try {
       QuerySnapshot querySnapshot = await _firestore
@@ -249,6 +256,7 @@ class ResumenService {
     }
   }
 
+  // Método para actualizar el nivel de inversor total en la base de datos
   Future<void> actualizarNivelInversorTotal(String nombreUsuario, String documentoId, int nivelInversorTotal) async {
     try {
       await _firestore

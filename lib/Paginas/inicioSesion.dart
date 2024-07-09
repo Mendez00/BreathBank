@@ -1,15 +1,14 @@
 import 'package:breath_bank/Paginas/menuPrincipal.dart';
 import 'package:breath_bank/Paginas/crearCuenta.dart';
-import 'package:breath_bank/Paginas/inversion.dart';
+import 'package:breath_bank/Paginas/menuPrincipalInicial.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class InicioSesion extends StatefulWidget {
-  //final Function()? onTap;
   const InicioSesion({
     Key? key,
-    /*required this.onTap*/
   }) : super(key: key);
 
   @override
@@ -17,12 +16,13 @@ class InicioSesion extends StatefulWidget {
 }
 
 class EstadoInicioSesion extends State<InicioSesion> {
-  final email = TextEditingController();
-  final contrasena = TextEditingController();
+  final email = TextEditingController(); // Controlador para el campo de email
+  final contrasena = TextEditingController(); // Controlador para el campo de contraseña
 
+  // Función para navegar al menú principal basado en la existencia de documentos específicos en Firestore
   void IrAlMenuPrincipal(BuildContext context) async {
     try {
-      User? user = FirebaseAuth.instance.currentUser;
+      User? user = FirebaseAuth.instance.currentUser; // Obtener usuario actualmente autenticado
       if (user != null) {
         String userId = user.uid;
 
@@ -54,22 +54,24 @@ class EstadoInicioSesion extends State<InicioSesion> {
             .get();
 
         // Verificar si alguna consulta tiene resultados
-        if (ej1Snapshot.docs.isNotEmpty && ej2Snapshot.docs.isNotEmpty && ej3Snapshot.docs.isNotEmpty) {
+        if (ej1Snapshot.docs.isNotEmpty &&
+            ej2Snapshot.docs.isNotEmpty &&
+            ej3Snapshot.docs.isNotEmpty) {
           // Si existen documentos para Ej1, Ej2 y Ej3, ir al menú principal
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => MenuPrincipal(onTap: () {})),
           );
         } else {
-          // Si no existen documentos para alguna de las condiciones, ir a la pantalla de inversión
-          // Aquí puedes reemplazar `PantallaInversion` con el nombre de tu pantalla de inversión
+          // Si no existen documentos para Ej1, Ej2 o Ej3, ir al menú principal inicial
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => Inversion(onTap: () {  },)),
+            MaterialPageRoute(builder: (context) => MenuPrincipalInicial()),
           );
         }
       }
     } catch (e) {
+      // Manejo de errores durante la verificación de documentos en Firestore
       print("Error al verificar documentos: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -77,25 +79,34 @@ class EstadoInicioSesion extends State<InicioSesion> {
         ),
       );
     }
+  }
 
-    }
-
+  // Función para iniciar sesión usando Firebase Authentication
   void iniciarSesion() async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email.text,
         password: contrasena.text,
       );
+
+      // Guardar el estado de inicio de sesión utilizando SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+
+      // Mostrar mensaje de inicio de sesión exitoso
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Inicio de sesión exitoso.'),
         ),
       );
+
+      // Navegar al menú principal después de iniciar sesión
       IrAlMenuPrincipal(context);
     } on FirebaseAuthException catch (e) {
+      // Manejo de errores específicos de FirebaseAuth durante el inicio de sesión
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error al iniciar sesión. Por favor, intentalo de nuevo.'),
+          content: Text('Error al iniciar sesión. Por favor, inténtalo de nuevo.'),
         ),
       );
     }
@@ -104,7 +115,7 @@ class EstadoInicioSesion extends State<InicioSesion> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white, // Color de fondo blanco para la pantalla
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -113,7 +124,7 @@ class EstadoInicioSesion extends State<InicioSesion> {
               children: [
                 const SizedBox(height: 20),
 
-                //logo
+                // Logo de la aplicación
                 Image.asset(
                   'lib/imagenes/logo.png',
                   width: 200,
@@ -123,7 +134,7 @@ class EstadoInicioSesion extends State<InicioSesion> {
 
                 const SizedBox(height: 80),
 
-                //Escribir email
+                // Campo de texto para introducir el email
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextField(
@@ -133,8 +144,7 @@ class EstadoInicioSesion extends State<InicioSesion> {
                         enabledBorder: const OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white)),
                         focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.grey.shade400)),
+                            borderSide: BorderSide(color: Colors.grey.shade400)),
                         fillColor: Colors.grey.shade200,
                         filled: true,
                         hintText: 'Email',
@@ -144,7 +154,7 @@ class EstadoInicioSesion extends State<InicioSesion> {
 
                 const SizedBox(height: 10),
 
-                //Escribir contraseña
+                // Campo de texto para introducir la contraseña
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextField(
@@ -154,8 +164,7 @@ class EstadoInicioSesion extends State<InicioSesion> {
                         enabledBorder: const OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white)),
                         focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.grey.shade400)),
+                            borderSide: BorderSide(color: Colors.grey.shade400)),
                         fillColor: Colors.grey.shade200,
                         filled: true,
                         hintText: 'Contraseña',
@@ -165,15 +174,15 @@ class EstadoInicioSesion extends State<InicioSesion> {
 
                 const SizedBox(height: 10),
 
-                //¿Has olvidado tu contraseña?
+                // Enlace para recuperar contraseña
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                        '¿Olvidaste tu constraseña?',
-                        style: TextStyle(color: Colors.white/*grey[600]*/),
+                        '¿Olvidaste tu contraseña?',
+                        style: TextStyle(color: Colors.white /*grey[600]*/),
                       ),
                     ],
                   ),
@@ -181,7 +190,7 @@ class EstadoInicioSesion extends State<InicioSesion> {
 
                 const SizedBox(height: 30),
 
-                //boton iniciar sesion
+                // Botón para iniciar sesión
                 GestureDetector(
                   onTap: () {
                     iniciarSesion();
@@ -205,7 +214,7 @@ class EstadoInicioSesion extends State<InicioSesion> {
 
                 const SizedBox(height: 50),
 
-                //¿No eres miembro todavía? Registrate
+                // Enlace para registrarse si no se tiene cuenta
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -218,12 +227,10 @@ class EstadoInicioSesion extends State<InicioSesion> {
                       onTap: () => Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CrearCuenta(
-                                  onTap: () {},
-                                )),
+                            builder: (context) => CrearCuenta(onTap: () {})),
                       ),
                       child: const Text(
-                        'Registrate',
+                        'Regístrate',
                         style: TextStyle(
                           color: Colors.blue,
                           fontWeight: FontWeight.bold,
