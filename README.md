@@ -1,7 +1,7 @@
 ![Figura 0](lib/imagenes/logo.png)
 # Bienvenido a BreathBank
 
-BreathBank es un proyecto de fin de grado, que consiste en la creación de una aplicación móvil para fomentar el uso del control consciente y voluntario de la respiración.
+BreathBank es un proyecto de fin de grado que consiste en la creación de una aplicación móvil para fomentar el uso del control consciente y voluntario de la respiración.
 
 ## Contenidos
 
